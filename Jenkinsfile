@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage("Checkout code") {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/omkarsuperb/test-jenkins.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/omkarsuperb/jenkins-pipeline.git']]])
             }
         }
         stage("Build image") {
@@ -31,11 +31,6 @@ pipeline {
                 }
             }
         }
-        stage('Creating Artifact'){
-            steps{
-                archiveArtifacts artifacts: '**', followSymlinks: false
-        }
-    }
         stage('Deploy to GKE') {
             steps{
                 sh "sed -i 's/hello:latest/hello:${env.BUILD_ID}/g' deployment.yaml"
