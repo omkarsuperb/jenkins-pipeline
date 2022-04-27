@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                       Img = docker.build(
-                          "gcr.io/kubernetes-project-340710/new",
+                          "gcr.io/kubernetes-project-340710/new:${env.BUILD_ID}",
                           "-f Dockerfile ."
                           )
                 }
@@ -26,14 +26,14 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry([credentialsId: "gcr:gcr", url: "https://gcr.io"]) {
-                      sh "docker push gcr.io/kubernetes-project-340710/new"
+                      sh "docker push gcr.io/kubernetes-project-340710/new:${env.BUILD_ID}"
                     }
                 }
             }
         }
         stage('Deploy to GKE') {
             steps{
-                sh "sed -i 's/hello:latest/hello:${env.BUILD_ID}/g' deployment.yaml"
+                sh "sed -i 's/latest/${env.BUILD_ID}/g' manifest/deployment.yaml"
                 step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'manifest/deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
             }
 	    }
