@@ -17,9 +17,7 @@ spec:
         image: gcr.io/kubernetes-project-340710/new:latest
         ports:
         - containerPort: 5000
-       
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
